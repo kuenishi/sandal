@@ -1,0 +1,65 @@
+---
+- hosts: localhost
+  sudo: yes
+  #java_versions: oracle-java8-installer
+  tasks:
+    - name: dev suites
+      apt:
+        pkg: build-essential,git,tig,cscope-el,emacs,emacs-goodies-el
+    - name: docker
+      apt:
+        pkg: docker
+    - name: basics
+      apt:
+        pkg: curl,htop,less,tmux,wget,yaml-mode,iftop
+    - name: for Erlang
+      apt:
+        pkg: fop,libncurses-dev,xsltproc,libssl-dev,autoconf,automake
+
+    - name: Erlang/OTP Basho repo local mirror
+      git: repo=git://github.com/basho/otp bare=yes dest=/usr/local/src/basho.otp.maint accept_hostkey=yes
+
+    - name: Erlang R15B01-basho
+      git: repo=/usr/local/src/basho.otp.maint.git version=basho_OTP_R15B01_scheduler_patch dest=/tmp/basho.otp.r15b
+    - name: Build R15B01-basho
+      shell: sudo {{ item }} chdir=/tmp/basho.otp.r15b
+      with_items:
+        - ./otp_build autoconf
+        - ./configure --disable-hipe --enable-m64-build --enable-dtrace --without-javac --prefix=/opt/erlang/R16B02basho8
+        - make all install
+        - make docs install-docs
+
+    - name: Erlang R16B02-basho8
+      git: repo=/usr/local/src/basho.otp.maint.git version=OTP_R16B02_basho8 dest=/tmp/basho.otp.r16b8
+      #git: repo=git://github.com/basho/otp version=OTP_R16B02_basho8
+      # dest=/tmp/basho.otp.r16b8 accept_hostkey=yes
+    - name: Configure and Build Erlang R16B02-basho8
+      shell: sudo {{ item }}  chdir=/tmp/basho.otp.r16b8
+      with_items:
+        - ./otp_build autoconf
+        - ./configure --disable-hipe --enable-m64-build --enable-dtrace --without-javac --prefix=/opt/erlang/R16B02basho8
+        - make all -j 8
+        - make install
+        - make docs
+        - make install-docs
+
+    #- name: Erlang 17.5
+
+    - name: for Riak
+      apt:
+        pkg: libpam0g-dev
+
+    
+## maven jdk8
+
+    - name: for Riak CS
+      apt:
+        pkg: uuid-runtime,golang,php5-cli,php5-curl
+## rbenv virtualenv uuid-runtime golang php5-cli php5-curl lein
+
+    - name: shell
+      command: touch abracadabra
+
+  handlers:
+    - name: check
+      shell: which emacs
