@@ -17,22 +17,27 @@
         pkg: fop,libncurses-dev,xsltproc,libssl-dev,autoconf,automake
 
     - name: Erlang/OTP Basho repo local mirror
-      git: repo=git://github.com/basho/otp bare=yes dest=/usr/local/src/basho.otp.maint accept_hostkey=yes
+      git: >
+        repo=git://github.com/basho/otp bare=yes
+        dest=/usr/local/src/basho.otp.maint accept_hostkey=yes
 
     - name: Erlang R15B01-basho
-      git: repo=/usr/local/src/basho.otp.maint.git version=basho_OTP_R15B01_scheduler_patch dest=/tmp/basho.otp.r15b
+      git: >
+        repo=/usr/local/src/basho.otp.maint
+        version=basho_OTP_R15B01_scheduler_patch
+        dest=/tmp/basho.otp.r15b
     - name: Build R15B01-basho
       shell: sudo {{ item }} chdir=/tmp/basho.otp.r15b
       with_items:
         - ./otp_build autoconf
-        - ./configure --disable-hipe --enable-m64-build --enable-dtrace --without-javac --prefix=/opt/erlang/R16B02basho8
+        - ./configure --disable-hipe --enable-m64-build --enable-dtrace --without-javac --prefix=/opt/erlang/R15B01c
         - make all install
         - make docs install-docs
 
     - name: Erlang R16B02-basho8
-      git: repo=/usr/local/src/basho.otp.maint.git version=OTP_R16B02_basho8 dest=/tmp/basho.otp.r16b8
-      #git: repo=git://github.com/basho/otp version=OTP_R16B02_basho8
-      # dest=/tmp/basho.otp.r16b8 accept_hostkey=yes
+      git: >
+        repo=/usr/local/src/basho.otp.maint
+        version=OTP_R16B02_basho8 dest=/tmp/basho.otp.r16b8
     - name: Configure and Build Erlang R16B02-basho8
       shell: sudo {{ item }}  chdir=/tmp/basho.otp.r16b8
       with_items:
@@ -44,6 +49,14 @@
         - make install-docs
 
     #- name: Erlang 17.5
+
+    - name: Download Maven
+      get_url: >
+        url=http://ftp.tsukuba.wide.ad.jp/software/apache/maven/maven-3/3.3.1/binaries/apache-maven-3.3.1-bin.tar.gz
+        sha256sum=153564900617218a126f78d2603d060d0a15f19f3ec1689fc2b7692a3c15b9aa
+        dest=/usr/local/java/
+    - name: Install Maven
+      command: tar xzf apache-maven-3.3.1-bin.tar.gz chdir=/usr/local/java
 
     - name: for Riak
       apt:
