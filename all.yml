@@ -11,7 +11,7 @@
         pkg: docker
     - name: basics
       apt:
-        pkg: curl,htop,less,tmux,wget,yaml-mode,iftop
+        pkg: curl,htop,less,tmux,wget,yaml-mode,iftop,dstat
     - name: for Erlang
       apt:
         pkg: fop,libncurses-dev,xsltproc,libssl-dev,autoconf,automake
