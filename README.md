@@ -1,5 +1,5 @@
 # sandal
-Local environment automatic generation
+Local environment automatic generation; we can't be barefoot any more but boots are too much and bootstrapping is hard.
 
 ## Prerequisites
 
