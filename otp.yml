@@ -1,0 +1,35 @@
+---
+    - name: for Erlang
+      apt:
+        pkg: fop,libncurses-dev,xsltproc,libssl-dev,autoconf,automake
+    - name: Erlang/OTP Basho repo local mirror
+      git: >
+        repo=git://github.com/basho/otp bare=yes
+        dest=/usr/local/src/basho.otp.maint accept_hostkey=yes
+
+    - name: Erlang R15B01-basho
+      git: >
+        repo=/usr/local/src/basho.otp.maint
+        version=basho_OTP_R15B01_scheduler_patch
+        dest=/tmp/basho.otp.r15b
+    - name: Build R15B01-basho
+      shell: sudo {{ item }} chdir=/tmp/basho.otp.r15b
+      with_items:
+        - ./otp_build autoconf
+        - ./configure --disable-hipe --enable-m64-build --enable-dtrace --without-javac --prefix=/opt/erlang/R15B01c
+        - make all -j 8
+        - make install
+        - make docs install-docs
+
+    - name: Erlang R16B02-basho8
+      git: >
+        repo=/usr/local/src/basho.otp.maint
+        version=OTP_R16B02_basho8 dest=/tmp/basho.otp.r16b8
+    - name: Configure and Build Erlang R16B02-basho8
+      shell: sudo {{ item }}  chdir=/tmp/basho.otp.r16b8
+      with_items:
+        - ./otp_build autoconf
+        - ./configure --disable-hipe --enable-m64-build --enable-dtrace --without-javac --prefix=/opt/erlang/R16B02basho8
+        - make all -j 8
+        - make install
+        - make docs install-docs
