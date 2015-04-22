@@ -14,4 +14,4 @@ ssh_keys: ~/.ssh/id_rsa.pub
 
 install:
 	pip install ansible
-	ansible-playbook all.yml -i inventory --ask-sudo-pass
+	ansible-playbook all.yml -c local -i inventory --ask-sudo-pass
