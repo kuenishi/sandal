@@ -13,7 +13,7 @@
       apt:
         pkg: curl,htop,less,tmux,wget,yaml-mode,iftop,dstat
 
-    - include: external-clients-setup.yml
+    - include: external-clients.yml
     - include: otp.yml
 
     - name: Create directory for maven       

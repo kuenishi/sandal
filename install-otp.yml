@@ -1,4 +1,7 @@
 ---
+- hosts: localhost
+  sudo: yes
+  tasks:
     - name: for Erlang
       apt:
         pkg: fop,libncurses-dev,xsltproc,libssl-dev,autoconf,automake

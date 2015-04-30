@@ -1,0 +1,31 @@
+---
+    - name: for Riak CS external clients test
+      apt:
+        pkg: uuid-runtime,php5-cli,php5-curl,python-virtualenv,mercurial
+
+    - name: download golang
+      git: >
+        repo=https://go.googlesource.com/go
+        version=go1.4.2
+        dest=/usr/local/go
+    
+    - name: Build go
+      shell: ./all.bash chdir=/usr/local/go/src
+
+    - name: Install lein
+      get_url: >
+        url=https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+        dest=/usr/local/bin/lein
+
+    - name: setup lein
+      command: chmod 755 /usr/local/bin/lein
+
+    - name: Install PHP with Curl extension for Riak CS
+      apt:
+        pkg: php5-cli,php5-curl
+
+    - name: Install composer
+      shell: curl -sS https://getcomposer.org/installer | php
+
+    - name: Configure composer
+      shell: mv composer.phar /usr/local/bin/composer
